@@ -47,8 +47,8 @@ def init_db():
 
 @contextmanager
 def session():
-    session = sessionmaker()
-    session.configure(bind=current_engine)
+    factory = sessionmaker(bind=current_engine)
+    session = factory()
     try:
         yield session
         session.commit()
@@ -58,43 +58,32 @@ def session():
     finally:
         session.close()
 
-def _get_session():
-    engine = _sqlite_engine()
-    session = sessionmaker()
-    session.configure(bind=engine)
-    return session()
-
-
 def stock_create(name, price):
-    session = _get_session()
-    stock = Stock(name=name, price=price)
-    session.add(stock)
-    session.commit()
+    with session() as s:
+        Stock(name=name, price=price)
 
 
 def stock_edit_by_name(name, value):
-    session = _get_session()
-    stock = session.query(Stock).filter_by(name=name).first()
-    if stock:
-        stock.price = value
-        session.add(stock)
-        session.commit()
-        return 0
+    with session() as s:
+        stock = s.query(Stock).filter_by(name=name).first()
+        if stock:
+            stock.price = value
+            s.add(stock)
+            return 0
     return 1
 
 
 def stock_price_by_name(name):
-    session = _get_session()
-    stock = session.query(Stock).filter_by(name=name).first()
-    if stock:
-        return stock.price
+    with session() as s:
+        stock = s.query(Stock).filter_by(name=name).first()
+        if stock:
+            return stock.price
     return None
 
 
 def user_create(name, password):
-    session = _get_session()
-    if session.query(User).filter_by(name=name).first():
-        return 1
-    user = User(name=name, password=password)
-    session.add(user)
-    session.commit()
+    with session() as s:
+        if session.query(User).filter_by(name=name).first():
+            return 1
+        user = User(name=name, password=password)
+        s.add(user)
