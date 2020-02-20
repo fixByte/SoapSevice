@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import uuid
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 from sqlalchemy import create_engine, Column, Float, Integer, Sequence, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -96,3 +98,30 @@ def user_create(name, password):
             return 1
         user = User(name=name, password=password)
         s.add(user)
+
+def user_login(name, password):
+    with session() as s:
+        user = s.query(User.id, User.password).filter_by(name=name).first()
+        if user:
+            if user.password == password:
+                u_session = user_session(user.id)
+                return u_session
+
+def user_has_permissions(user_name, session_uid):
+    with session() as s:
+        user = s.query(User.id).filter_by(name=user_name).first()
+        if user:
+            if s.query(UserSession).filter_by(user=user.id, uid=session_uid).first():
+                return True
+
+def user_session(user_id):
+    with session() as s:
+        session_uid = s.query(UserSession.uid).filter_by(user=user_id).first()
+        if session_uid:
+            return session_uid.uid
+        else:
+            uid = str(uuid.uuid4())
+            expires = datetime.now() + timedelta(days=10)
+            user_session = UserSession(user=user_id, expires=expires, uid=uid)
+            s.add(user_session)
+            return user_session.uid
