@@ -75,3 +75,12 @@ def stock_price_by_name(name):
     if stock:
         return stock.price
     return None
+
+
+def user_create(name, password):
+    session = _get_session()
+    if session.query(User).filter_by(name=name).first():
+        return 1
+    user = User(name=name, password=password)
+    session.add(user)
+    session.commit()
