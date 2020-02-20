@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+from contextlib import contextmanager
 from sqlalchemy import create_engine, Column, Float, Integer, Sequence, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -16,6 +17,7 @@ def _sqlite_engine():
     engine = create_engine(f'sqlite:///{db_path}')
     return engine
 
+current_engine = _sqlite_engine()
 
 class Stock(Base):
     __tablename__ = 'stock'
@@ -43,6 +45,18 @@ def init_db():
     engine = _sqlite_engine()
     Base.metadata.create_all(engine)
 
+@contextmanager
+def session():
+    session = sessionmaker()
+    session.configure(bind=current_engine)
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 def _get_session():
     engine = _sqlite_engine()
