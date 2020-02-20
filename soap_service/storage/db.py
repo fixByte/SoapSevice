@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-
 from contextlib import contextmanager
-from sqlalchemy import create_engine, Column, Float, Integer, Sequence, String
+from sqlalchemy import create_engine, Column, Float, Integer, Sequence, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -40,6 +39,16 @@ class User(Base):
     def __str__(self):
         return f'<User: {self.name}>'
 
+class UserSession(Base):
+    __tablename__ = 'sessions'
+
+    id = Column(Integer, Sequence('session_id_seq'), primary_key=True)
+    user = Column(Integer, ForeignKey('users.id'))
+    expires = Column(DateTime)
+    uid = Column(String)
+
+    def __str__(self):
+        return f'<Session:{self.user}. Expires: {self.expires}>'
 
 def init_db():
     engine = _sqlite_engine()
@@ -83,7 +92,7 @@ def stock_price_by_name(name):
 
 def user_create(name, password):
     with session() as s:
-        if session.query(User).filter_by(name=name).first():
+        if s.query(User).filter_by(name=name).first():
             return 1
         user = User(name=name, password=password)
         s.add(user)
