@@ -58,6 +58,17 @@ def stock_create(name, price):
     session.commit()
 
 
+def stock_edit_by_name(name, value):
+    session = _get_session()
+    stock = session.query(Stock).filter_by(name=name).first()
+    if stock:
+        stock.price = value
+        session.add(stock)
+        session.commit()
+        return 0
+    return 1
+
+
 def stock_price_by_name(name):
     session = _get_session()
     stock = session.query(Stock).filter_by(name=name).first()
