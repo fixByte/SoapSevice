@@ -5,7 +5,7 @@
 
 Создать таблицы для БД:
 
-``python -c "from soap_service.storage import db;db.init_db()"``
+``python soap_service/storage/init_db.py``
 
 WSGI сервер из стандартной библиотеки:
 

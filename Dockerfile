@@ -4,6 +4,6 @@ COPY . .
 RUN ls -a
 ARG PYTHONPATH=./
 RUN pip install -r requirements.txt
-RUN python -c "from soap_service.storage import db;db.init_db()"
+RUN python soap_service/storage/init_db.py
 EXPOSE 8000
 CMD gunicorn -b :8000 soap_service.server.server
