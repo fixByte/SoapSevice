@@ -9,6 +9,13 @@ def change_password(user_name, password, token):
 
     return get_message(False, 'Нет прав доступа.', 'Client')
 
+def create_stock(user_name, token, stock_name, stock_price):
+    if has_permissions(user_name, token):
+        result = db.stock_create(stock_name, stock_price)
+        if result:
+            return get_message(True, result)
+        return get_message(False, 'Уже существует', 'Server')
+
 
 def create_user(user_name, password):
     result = db.user_create(user_name, password)

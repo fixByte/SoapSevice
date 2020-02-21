@@ -101,7 +101,13 @@ def session():
 
 def stock_create(name, price):
     with session() as s:
-        Stock(name=name, price=price)
+        stock = s.query(Stock).filter_by(name=name).first()
+        if stock:
+            return False
+        else:
+            stock = Stock(name=name, price=price)
+            s.add(stock)
+            return stock.name
 
 
 def stock_edit_by_name(name, value):
@@ -173,4 +179,3 @@ def user_token_remove(user_id):
     with session() as s:
         token = s.query(Token).filter_by(user=user_id).first()
         s.delete(token)
-
