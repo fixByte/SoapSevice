@@ -6,9 +6,13 @@ authors = ["Igor Pestov pestov.igr@gmail.com"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+sqlalchemy = "^1.3.13"
+spyne = "2.13.2a0"
+psycopg2 = "^2.8.4"
+gunicorn = "^20.0.4"
+lxml = "^4.5.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 
 [build-system]
 requires = ["poetry>=0.12"]
