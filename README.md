@@ -3,6 +3,8 @@
 
 ``python -m pip install -r requitements.txt``
 
+Создать таблицы для БД:
+
 ``python -c "from soap_service.storage import db;db.init_db()"``
 
 WSGI сервер из стандартной библиотеки:
@@ -20,7 +22,7 @@ Docker-compose:
 ###Переменные окружения:
 * **DB_TYPE** - тип БД (пустая строка)
 * **DB_NAME** - имя БД (app.db)
-* **DB_HOST** - хост БД (127.0.0.1)
+* **DB_HOST** - адресс БД (127.0.0.1)
 * **DB_PORT** - порт БД (5432)
 * **DB_USER** - пользователь БД
 * **DB_PASSWORD** - пароль пользователя
