@@ -23,7 +23,9 @@ def get_message(result=False, message='', side=''):
 
 def get_stock_price(name):
     price = db.stock_price_by_name(name)
-    return price
+    if price:
+        return get_message(True, price)
+    return get_message(False, 'Запись не найдена.', 'Server')
 
 
 def has_permissions(user_name, token):
@@ -40,6 +42,10 @@ def login(user_name, password):
     return get_message(False, 'Неверные логин или пароль.', 'Client')
 
 
-def set_stock_price(name, price):
-    result = db.stock_edit_by_name(name, price)
-    return result
+def set_stock_price(user_name, token, name, price):
+    if has_permissions(user_name, token):
+        result = db.stock_edit_by_name(name, price)
+        if result:
+            return get_message(True, result)
+        return get_message(False, 'Запись не найдена.', 'Server')
+    return get_message(False, 'Нет прав доступа.', 'Client')
