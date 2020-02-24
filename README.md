@@ -15,14 +15,15 @@ Gunicorn:
 
 ``gunicorn -b {HOST}:{PORT} soap_service.server.server``
 
-Docker-compose:
+Запуск через **Docker-compose**:
 
-``docker-compose up``
+    Указать необходимые переменные окружения в файле .env 
+    Запустить docker-compose up
 
 ###Переменные окружения:
 * **DB_TYPE** - тип БД (пустая строка)
 * **DB_NAME** - имя БД (app.db)
-* **DB_HOST** - адресс БД (127.0.0.1)
+* **DB_HOST** - адрес БД (127.0.0.1)
 * **DB_PORT** - порт БД (5432)
 * **DB_USER** - пользователь БД
 * **DB_PASSWORD** - пароль пользователя
