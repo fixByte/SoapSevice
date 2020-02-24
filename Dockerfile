@@ -1,9 +1,7 @@
-FROM python:3.8
+FROM python:3.8-slim
+RUN apt-get -qq update
+RUN apt-get install -y postgresql-client --show-progress
 WORKDIR /app
 COPY . .
-RUN ls -a
-ARG PYTHONPATH=./
+ENV PYTHONPATH=./
 RUN pip install -r requirements.txt
-RUN python soap_service/storage/init_db.py
-EXPOSE 8000
-CMD gunicorn -b :8000 soap_service.server.server
