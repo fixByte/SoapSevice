@@ -17,7 +17,7 @@ class AuthHeader(ComplexModel):
 class StockService(Service):
 
     @rpc(Unicode(encoding='utf-8'), Float(ge=0.0), _in_header=(AuthHeader,), _operation_name='CreateStock',
-         _returns=Float)
+         _returns=String)
     def create_stock(ctx, StockName, StockPrice):
         user_name = ctx.in_header.UserName
         token = ctx.in_header.Token
